@@ -108,6 +108,13 @@ h1 {
   text-transform: uppercase;
 }
 
+.departure {
+  margin-top: 4px;
+  color: var(--gold);
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .notice {
   color: var(--gold);
   font-size: 18px;

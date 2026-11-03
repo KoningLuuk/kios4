@@ -95,6 +95,10 @@ function render(data) {
   $('match-opponent').textContent = opponent ? `${match.home ? 'Thuis tegen' : 'Uit bij'} ${opponent}` : match.home ? 'Thuiswedstrijd' : 'Uitwedstrijd'
   $('match-when').textContent = [formatDate(match.date), match.time && `${match.time} uur`].filter(Boolean).join(' · ')
 
+  const departure = !match.home && match.departure
+  $('match-departure').textContent = departure ? `Vertrek om ${departure} uur` : ''
+  $('match-departure').hidden = !departure
+
   const lineup = match.lineup
   if (!lineup) return showNotice('De vakken voor deze wedstrijd moeten nog gepubliceerd worden.')
 
