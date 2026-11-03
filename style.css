@@ -1,0 +1,259 @@
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/orbitron-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/rajdhani-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/rajdhani-latin-700-normal.woff2') format('woff2');
+}
+
+:root {
+  --bg: #02060c;
+  --panel: rgba(7, 21, 36, 0.82);
+  --line: rgba(79, 209, 255, 0.28);
+  --cyan: #3fd5ff;
+  --gold: #ffc94d;
+  --text: #d9f3ff;
+  --dim: #8bb1c8;
+  --faint: #6a8ca3;
+  --dame: #ff8fd0;
+  --heer: #5ab8ff;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(900px 500px at 70% -10%, rgba(0, 150, 255, 0.16), transparent 60%), var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+main {
+  width: min(100%, 520px);
+  margin: 0 auto;
+  padding: 22px 16px 36px;
+  display: grid;
+  gap: 14px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+h1 {
+  margin: 2px 0 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 34px;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 18px rgba(63, 213, 255, 0.35);
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  padding: 14px 16px;
+}
+
+.match {
+  border-left: 3px solid var(--gold);
+}
+
+.opponent {
+  margin-top: 4px;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.when {
+  color: var(--dim);
+  font-size: 18px;
+}
+
+.when::first-letter {
+  text-transform: uppercase;
+}
+
+.notice {
+  color: var(--gold);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  padding: 26px 18px;
+}
+
+.retry {
+  justify-self: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--cyan);
+  border-radius: 5px;
+  background: rgba(63, 213, 255, 0.1);
+  color: var(--cyan);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#lineup {
+  display: grid;
+  gap: 14px;
+}
+
+.pitch {
+  position: relative;
+  aspect-ratio: 224 / 424;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 140, 220, 0.14), rgba(1, 8, 16, 0.75));
+  overflow: hidden;
+}
+
+.pitch svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tint-attack {
+  fill: rgba(255, 201, 77, 0.04);
+}
+
+.tint-defense {
+  fill: rgba(79, 209, 255, 0.04);
+}
+
+.free-zone {
+  fill: none;
+  stroke: rgba(120, 220, 255, 0.22);
+  stroke-width: 0.8;
+  stroke-dasharray: 4 3;
+}
+
+.lines {
+  fill: none;
+  stroke: rgba(120, 220, 255, 0.5);
+  stroke-width: 1.1;
+}
+
+.korf circle {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+.korf .korf-dot {
+  fill: var(--gold);
+  stroke: none;
+}
+
+.vak-name {
+  fill: var(--dim);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-anchor: middle;
+}
+
+.slot {
+  position: absolute;
+  width: 39%;
+  min-height: 44px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.chip {
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--heer);
+  border-radius: 5px;
+  background: rgba(6, 22, 38, 0.95);
+}
+
+.chip.g-D {
+  border-left-color: var(--dame);
+}
+
+.name {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.open {
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.slot .open {
+  padding: 6px;
+  border: 1.5px dashed var(--line);
+  border-radius: 5px;
+  background: rgba(2, 12, 22, 0.55);
+}
+
+.bench-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.bench-list .open {
+  text-align: left;
+}
+
+.stamp {
+  margin: 0;
+  color: var(--faint);
+  font-size: 14px;
+  text-align: center;
+}
