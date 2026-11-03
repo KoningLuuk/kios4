@@ -262,6 +262,52 @@ h1 {
   text-align: left;
 }
 
+.sub-list {
+  display: grid;
+  margin-top: 8px;
+}
+
+.sub-list .open {
+  text-align: left;
+}
+
+.sub {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-top: 1px dashed var(--line);
+  font-weight: 700;
+}
+
+.sub:first-child {
+  border-top: 0;
+}
+
+.sub-min {
+  color: var(--cyan);
+}
+
+.sub-out {
+  color: #ff9aa6;
+}
+
+.sub-arrow {
+  color: var(--faint);
+}
+
+.sub-in {
+  color: #4dffb8;
+}
+
+.sub-out,
+.sub-in {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .stamp {
   margin: 0;
   color: var(--faint);

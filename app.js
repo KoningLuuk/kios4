@@ -63,6 +63,12 @@ function playerChip(player, slotGender) {
   return chip
 }
 
+function subRow(sub) {
+  const row = el('div', 'sub')
+  row.append(el('span', 'sub-min', `${sub.minute}'`), el('span', 'sub-out', sub.out.name), el('span', 'sub-arrow', '→'), el('span', 'sub-in', sub.in.name))
+  return row
+}
+
 function renderSlots(vak, slots, mirror) {
   return SLOT_XY.map(([x, y0], i) => {
     const y = mirror ? 400 - y0 : y0
@@ -105,6 +111,10 @@ function render(data) {
   $('slots').replaceChildren(...renderSlots('Aanval', lineup.attack, false), ...renderSlots('Verdediging', lineup.defense, true))
   const bench = lineup.bench ?? []
   $('bench').replaceChildren(...(bench.length ? bench.map((p) => playerChip(p)) : [el('span', 'open', 'Geen wisselspelers')]))
+  // alleen aanwezig als de trainer de wissels voor deze wedstrijd aan heeft gezet
+  const subs = lineup.subs
+  $('subs-panel').hidden = !subs
+  if (subs) $('subs').replaceChildren(...(subs.length ? subs.map(subRow) : [el('span', 'open', 'Geen wissels gepland')]))
   $('stamp').textContent = match.publishedAt ? formatStamp(match.publishedAt) : ''
   $('lineup').hidden = false
 }
