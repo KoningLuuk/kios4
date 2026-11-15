@@ -1,34 +1,35 @@
+/* KIOS 4 · Vakken, in de kleuren van KIOS Ruinerwold (groen, zwart, wit) */
+
 @font-face {
-  font-family: 'Orbitron';
-  font-weight: 700;
+  font-family: 'Exo 2';
+  font-style: normal;
   font-display: swap;
-  src: url('fonts/orbitron-latin-700-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Rajdhani';
-  font-weight: 500;
-  font-display: swap;
-  src: url('fonts/rajdhani-latin-500-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Rajdhani';
-  font-weight: 700;
-  font-display: swap;
-  src: url('fonts/rajdhani-latin-700-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  src: url('fonts/exo-2-latin-wght-normal.woff2') format('woff2-variations'), url('fonts/exo-2-latin-wght-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 :root {
-  --bg: #02060c;
-  --panel: rgba(7, 21, 36, 0.82);
-  --line: rgba(79, 209, 255, 0.28);
-  --cyan: #3fd5ff;
-  --gold: #ffc94d;
-  --text: #d9f3ff;
-  --dim: #8bb1c8;
-  --faint: #6a8ca3;
-  --dame: #ff8fd0;
-  --heer: #5ab8ff;
-  color-scheme: dark;
+  /* clubgroen uit het logo */
+  --green: #00843f;
+  --green-dark: #006532;
+  --green-deep: #004a25;
+  --green-soft: #e7f3ec;
+  --ink: #0f1a14;
+  --ink-2: #3e4d44;
+  --ink-3: #5c6c63;
+  --line: #e1e8e3;
+  --bg: #f1f5f2;
+  --card: #ffffff;
+  --dame: #e0468f;
+  --heer: #2a6fdb;
+  --out: #c93636;
+  --korf: #ffd21f;
+  --warn-bg: #fff2c7;
+  --warn-ink: #6e4b00;
+  --display: 'Exo 2', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: light;
 }
 
 * {
@@ -37,6 +38,18 @@
 
 [hidden] {
   display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 html {
@@ -50,104 +63,431 @@ body {
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh; /* houdt rekening met de in- en uitschuivende adresbalk */
-  background: radial-gradient(900px 500px at 70% -10%, rgba(0, 150, 255, 0.16), transparent 60%), var(--bg);
-  color: var(--text);
-  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-  font-size: 17px;
-  font-weight: 500;
-  line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 16px;
+  line-height: 1.4;
 }
 
-main {
+.wrap {
   width: min(100%, 520px);
-  margin: 0 auto;
-  padding: 22px 16px 36px;
-  display: grid;
-  gap: 14px;
+  margin-inline: auto;
+  padding-inline: 16px;
 }
 
-.eyebrow {
+/* ---------- Kop ---------- */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(130% 120% at 0% 0%, rgba(40, 190, 105, 0.55), transparent 60%),
+    linear-gradient(160deg, #00873f 0%, #006a33 55%, var(--green-deep) 100%);
+  padding: 26px 0 74px;
+}
+
+/* fijne diagonale strepen */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 10px);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* de ringen van het logo, groot en zacht op de achtergrond */
+.hero-rings {
+  position: absolute;
+  z-index: -1;
+  width: 340px;
+  height: 340px;
+  right: -150px;
+  top: -150px;
+  pointer-events: none;
+}
+
+.ring-outer {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 24;
+}
+
+.ring-inner {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.2);
+  stroke-width: 8;
+}
+
+.crest {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px #fff, 0 8px 20px rgba(0, 25, 10, 0.35);
+}
+
+.hero-text {
+  min-width: 0;
+}
+
+.club {
+  margin: 0;
+  font-family: var(--display);
   font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-weight: 650;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--cyan);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 h1 {
-  margin: 2px 0 0;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 34px;
-  letter-spacing: 0.06em;
-  text-shadow: 0 0 18px rgba(63, 213, 255, 0.35);
+  margin: 3px 0 0;
+  font-family: var(--display);
+  font-size: 40px;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 12px rgba(0, 30, 12, 0.35);
 }
 
-.panel {
+.tagline {
+  margin: 7px 0 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ---------- Kaarten ---------- */
+
+main {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  margin-top: -48px;
+  padding-bottom: 22px;
+}
+
+.card {
+  min-width: 0;
+  padding: 16px;
   border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--panel);
-  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 1px 2px rgba(15, 26, 20, 0.05), 0 10px 28px rgba(15, 40, 25, 0.08);
 }
 
-.match {
-  border-left: 3px solid var(--gold);
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.opponent {
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--green-dark);
+}
+
+h2::before {
+  content: '';
+  width: 4px;
+  height: 15px;
+  border-radius: 2px;
+  background: var(--green);
+}
+
+/* ---------- Volgende wedstrijd ---------- */
+
+.countdown {
+  margin-top: 10px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.countdown.soon {
+  background: var(--green-soft);
+  color: var(--green-dark);
+}
+
+.countdown.today {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--green);
+  color: #fff;
+}
+
+.countdown.today::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.versus {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
   margin-top: 4px;
-  font-size: 23px;
+}
+
+.team {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.team-crest {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+img.team-crest {
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0, 40, 18, 0.18);
+}
+
+/* letter in de systeemletter: in Exo 2 lijkt een O op een nul */
+.team-crest.letter {
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line);
+  background: linear-gradient(160deg, #f7f9f8, #e9eeeb);
+  color: var(--ink-2);
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.team-name {
+  max-width: 100%;
+  font-family: var(--display);
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 
-.when {
-  color: var(--dim);
-  font-size: 18px;
+.team-name.long {
+  font-size: 14px;
 }
 
-.when::first-letter {
+.team.us .team-name {
+  color: var(--green-dark);
+}
+
+.kickoff {
+  display: grid;
+  justify-items: center;
+  min-width: 100px;
+  padding-top: 4px;
+  text-align: center;
+}
+
+.day {
+  color: var(--ink-3);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.departure {
+.date {
+  margin-top: 1px;
+  font-size: 15px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.time {
   margin-top: 4px;
-  color: var(--gold);
-  font-size: 18px;
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.match-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.venue,
+.departure {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 14px;
   font-weight: 700;
 }
 
+.venue::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.venue.home {
+  background: var(--green);
+  color: #fff;
+}
+
+.venue.away {
+  background: #111;
+  color: #fff;
+}
+
+.departure {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+/* ---------- Meldingen ---------- */
+
 .notice {
-  color: var(--gold);
-  font-size: 18px;
-  font-weight: 700;
+  padding: 30px 20px;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 600;
   text-align: center;
-  padding: 26px 18px;
+}
+
+.notice.loading::before {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 34px;
+  margin: 0 auto 14px;
+  border: 4px solid var(--green-soft);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.notice.error {
+  color: var(--ink-2);
 }
 
 .retry {
   justify-self: center;
-  min-height: 44px;
-  padding: 0 20px;
-  border: 1px solid var(--cyan);
-  border-radius: 5px;
-  background: rgba(63, 213, 255, 0.1);
-  color: var(--cyan);
+  min-height: 46px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
   font: inherit;
   font-weight: 700;
+  box-shadow: 0 6px 16px rgba(0, 100, 48, 0.3);
   cursor: pointer;
 }
+
+.retry:hover {
+  background: var(--green-dark);
+}
+
+.retry:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 3px;
+}
+
+/* ---------- Vakken ---------- */
 
 #lineup {
   display: grid;
   gap: 14px;
 }
 
+.card.vakken {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card.vakken .card-head {
+  margin: 0;
+  padding: 14px 16px 12px;
+}
+
+.legend {
+  display: flex;
+  gap: 12px;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.key::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--heer);
+}
+
+.key-D::before {
+  background: var(--dame);
+}
+
 .pitch {
   position: relative;
   aspect-ratio: 224 / 424;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 140, 220, 0.14), rgba(1, 8, 16, 0.75));
-  overflow: hidden;
+  background: #0d8442;
 }
 
 .pitch svg {
@@ -158,159 +498,323 @@ h1 {
   display: block;
 }
 
-.tint-attack {
-  fill: rgba(255, 201, 77, 0.04);
+.turf-a {
+  fill: #0d8442;
 }
 
-.tint-defense {
-  fill: rgba(79, 209, 255, 0.04);
+.turf-b {
+  fill: #13914b;
 }
 
 .free-zone {
   fill: none;
-  stroke: rgba(120, 220, 255, 0.22);
+  stroke: rgba(255, 255, 255, 0.35);
   stroke-width: 0.8;
   stroke-dasharray: 4 3;
 }
 
 .lines {
   fill: none;
-  stroke: rgba(120, 220, 255, 0.5);
-  stroke-width: 1.1;
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 1.3;
 }
 
 .korf circle {
   fill: none;
-  stroke: var(--gold);
-  stroke-width: 2;
+  stroke: var(--korf);
+  stroke-width: 2.2;
 }
 
 .korf .korf-dot {
-  fill: var(--gold);
+  fill: var(--korf);
   stroke: none;
 }
 
 .vak-name {
-  fill: var(--dim);
+  fill: rgba(255, 255, 255, 0.8);
+  font-family: var(--display);
   font-size: 8.5px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-anchor: middle;
 }
 
 .slot {
   position: absolute;
-  width: 39%;
+  width: 41%;
   min-height: 44px;
-  transform: translate(-50%, -50%);
+  translate: -50% -50%;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  border-radius: 5px;
 }
 
 .chip {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 3px;
   min-width: 0;
-  padding: 6px 8px;
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--heer);
-  border-radius: 5px;
-  background: rgba(6, 22, 38, 0.95);
+  padding: 8px 10px 8px 16px;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05), 0 5px 14px rgba(0, 30, 10, 0.3);
 }
 
-.chip.g-D {
-  border-left-color: var(--dame);
+/* kleurstreep: roze = dame, blauw = heer */
+.chip::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--heer);
 }
 
+.chip.g-D::before {
+  background: var(--dame);
+}
+
+/* lange namen lopen door op een tweede regel in plaats van af te breken met … */
 .name {
-  display: block;
-  font-size: 17px;
+  max-width: 100%;
+  font-size: 16px;
   font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.2;
+  overflow-wrap: break-word;
 }
 
 .tag {
-  display: block;
-  font-size: 12px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+  font-size: 11px;
   font-weight: 700;
-  color: var(--gold);
 }
 
 .open {
-  color: var(--faint);
-  font-size: 13px;
-  font-weight: 700;
-  text-align: center;
+  color: var(--ink-3);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .slot .open {
-  padding: 6px;
-  border: 1.5px dashed var(--line);
-  border-radius: 5px;
-  background: rgba(2, 12, 22, 0.55);
+  display: block;
+  padding: 10px 6px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.75);
+  border-radius: 10px;
+  background: rgba(0, 40, 15, 0.28);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+}
+
+.count,
+.hint {
+  color: var(--ink-3);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .bench-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 8px;
-  margin-top: 10px;
 }
 
-.bench-list .open {
-  text-align: left;
+.bench-list .chip {
+  border: 1px solid var(--line);
+  background: #f6f9f7;
+  box-shadow: none;
 }
+
+/* ---------- Wissels ---------- */
 
 .sub-list {
   display: grid;
-  margin-top: 8px;
-}
-
-.sub-list .open {
-  text-align: left;
 }
 
 .sub {
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: 48px minmax(0, 1fr) 16px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
-  padding: 7px 0;
-  border-top: 1px dashed var(--line);
-  font-weight: 700;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  font-weight: 650;
 }
 
 .sub:first-child {
+  padding-top: 0;
   border-top: 0;
 }
 
 .sub-min {
-  color: var(--cyan);
-}
-
-.sub-out {
-  color: #ff9aa6;
-}
-
-.sub-arrow {
-  color: var(--faint);
-}
-
-.sub-in {
-  color: #4dffb8;
+  justify-self: start;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
 }
 
 .sub-out,
 .sub-in {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sub-out::before,
+.sub-in::before {
+  content: '';
+  flex: none;
+  width: 9px;
+  height: 8px;
+  background: currentColor;
+}
+
+.sub-out {
+  color: var(--out);
+}
+
+.sub-out::before {
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.sub-in {
+  color: var(--green-dark);
+}
+
+.sub-in::before {
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.sub-name {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
+.sub-arrow {
+  color: var(--ink-3);
+  text-align: center;
+}
+
 .stamp {
   margin: 0;
-  color: var(--faint);
-  font-size: 14px;
+  color: var(--ink-3);
+  font-size: 13px;
   text-align: center;
+}
+
+/* ---------- Voet ---------- */
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 6px 16px 28px;
+  color: var(--ink-3);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.foot img {
+  border-radius: 50%;
+}
+
+/* ---------- Beweging ---------- */
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro .rise {
+    animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .intro #lineup > .rise:nth-child(1) {
+    animation-delay: 0.06s;
+  }
+
+  .intro #lineup > .rise:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+
+  .intro #lineup > .rise:nth-child(3) {
+    animation-delay: 0.18s;
+  }
+
+  .intro .slot .chip,
+  .intro .slot .open {
+    animation: pop 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.25) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .countdown.today::before {
+    animation: none;
+  }
+
+  .notice.loading::before {
+    animation-duration: 2.4s;
+  }
+}
+
+/* smalle telefoons */
+@media (max-width: 360px) {
+  h1 {
+    font-size: 34px;
+  }
+
+  .crest {
+    width: 64px;
+    height: 64px;
+  }
+
+  .kickoff {
+    min-width: 92px;
+  }
+
+  .time {
+    font-size: 28px;
+  }
+
+  .name {
+    font-size: 15px;
+  }
 }

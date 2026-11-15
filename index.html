@@ -5,68 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src https://kfqvzbhujqxwegrgvulu.supabase.co; base-uri 'none'; form-action 'none'" />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#02060c" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#00843f" />
     <meta property="og:title" content="KIOS 4 · Vakken" />
     <meta property="og:description" content="De volgende wedstrijd en de vakken van KIOS 4" />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://koningluuk.github.io/kios4/kios-logo.jpg" />
+    <meta property="og:image:width" content="554" />
+    <meta property="og:image:height" content="554" />
+    <meta property="og:image:alt" content="Logo van KIOS Ruinerwold" />
     <title>KIOS 4 · Vakken</title>
-    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+    <link rel="icon" type="image/png" href="kios-logo.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preload" href="fonts/exo-2-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <main>
-      <header class="top">
-        <div class="eyebrow">J.A.R.V.I.S. · Vakken</div>
-        <h1>KIOS 4</h1>
-      </header>
+  <body class="intro">
+    <header class="hero">
+      <div class="wrap hero-inner">
+        <svg class="hero-rings" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+          <circle class="ring-outer" cx="200" cy="200" r="184" />
+          <circle class="ring-inner" cx="200" cy="200" r="150" />
+        </svg>
+        <img class="crest" src="kios-logo.png" width="76" height="76" alt="Logo van KIOS Ruinerwold" />
+        <div class="hero-text">
+          <p class="club">KIOS Ruinerwold</p>
+          <h1>KIOS 4</h1>
+          <p class="tagline">Volgende wedstrijd en vakken</p>
+        </div>
+      </div>
+    </header>
 
-      <section id="match" class="panel match" hidden>
-        <div class="eyebrow">Volgende wedstrijd</div>
-        <div id="match-opponent" class="opponent"></div>
-        <div id="match-when" class="when"></div>
-        <div id="match-departure" class="departure" hidden></div>
+    <main class="wrap">
+      <section id="match" class="card match rise" aria-labelledby="match-title" hidden>
+        <div class="card-head">
+          <h2 id="match-title">Volgende wedstrijd</h2>
+        </div>
+        <p id="match-summary" class="sr-only"></p>
+        <div class="versus" aria-hidden="true">
+          <div id="team-home"></div>
+          <div class="kickoff">
+            <span id="match-day" class="day"></span>
+            <span id="match-date" class="date"></span>
+            <span id="match-time" class="time" hidden></span>
+            <span id="match-countdown" class="countdown" hidden></span>
+          </div>
+          <div id="team-away"></div>
+        </div>
+        <div class="match-foot">
+          <span id="match-venue" class="venue"></span>
+          <span id="match-departure" class="departure" hidden></span>
+        </div>
       </section>
 
-      <section id="notice" class="panel notice" role="status"></section>
+      <section id="notice" class="card notice loading" role="status">Gegevens ophalen…</section>
       <button id="retry" class="retry" type="button" hidden>Opnieuw proberen</button>
 
       <section id="lineup" hidden>
-        <div class="pitch">
-          <svg viewBox="-12 -12 224 424" aria-hidden="true">
-            <rect class="tint-attack" x="0" y="0" width="200" height="200" />
-            <rect class="tint-defense" x="0" y="200" width="200" height="200" />
-            <rect class="free-zone" x="-8" y="-8" width="216" height="416" />
-            <g class="lines">
-              <rect x="0" y="0" width="200" height="400" />
-              <line x1="0" y1="200" x2="200" y2="200" />
-              <path d="M 75 66.7 A 25 25 0 0 1 125 66.7 L 125 91.7 A 25 25 0 0 1 75 91.7 Z" />
-              <circle cx="100" cy="91.7" r="25" />
-              <path d="M 125 333.3 A 25 25 0 0 1 75 333.3 L 75 308.3 A 25 25 0 0 1 125 308.3 Z" />
-              <circle cx="100" cy="308.3" r="25" />
-            </g>
-            <g class="korf">
-              <circle cx="100" cy="66.7" r="5.2" />
-              <circle class="korf-dot" cx="100" cy="66.7" r="1.6" />
-              <circle cx="100" cy="333.3" r="5.2" />
-              <circle class="korf-dot" cx="100" cy="333.3" r="1.6" />
-            </g>
-            <text class="vak-name" x="100" y="189">AANVAL</text>
-            <text class="vak-name" x="100" y="217">VERDEDIGING</text>
-          </svg>
-          <div id="slots"></div>
+        <div class="card vakken rise">
+          <div class="card-head">
+            <h2>Vakken</h2>
+            <div class="legend" aria-hidden="true">
+              <span class="key key-D">Dame</span>
+              <span class="key key-H">Heer</span>
+            </div>
+          </div>
+          <div class="pitch">
+            <svg viewBox="-12 -12 224 424" aria-hidden="true" focusable="false">
+              <defs>
+                <pattern id="turf" width="200" height="50" patternUnits="userSpaceOnUse">
+                  <rect class="turf-a" width="200" height="25" />
+                  <rect class="turf-b" y="25" width="200" height="25" />
+                </pattern>
+                <radialGradient id="vignette" cx="50%" cy="50%" r="72%">
+                  <stop offset="55%" stop-color="#001a0a" stop-opacity="0" />
+                  <stop offset="100%" stop-color="#001a0a" stop-opacity="0.35" />
+                </radialGradient>
+              </defs>
+              <rect x="-12" y="-12" width="224" height="424" fill="url(#turf)" />
+              <rect x="-12" y="-12" width="224" height="424" fill="url(#vignette)" />
+              <rect class="free-zone" x="-8" y="-8" width="216" height="416" />
+              <g class="lines">
+                <rect x="0" y="0" width="200" height="400" />
+                <line x1="0" y1="200" x2="200" y2="200" />
+                <path d="M 75 66.7 A 25 25 0 0 1 125 66.7 L 125 91.7 A 25 25 0 0 1 75 91.7 Z" />
+                <circle cx="100" cy="91.7" r="25" />
+                <path d="M 125 333.3 A 25 25 0 0 1 75 333.3 L 75 308.3 A 25 25 0 0 1 125 308.3 Z" />
+                <circle cx="100" cy="308.3" r="25" />
+              </g>
+              <g class="korf">
+                <circle cx="100" cy="66.7" r="5.2" />
+                <circle class="korf-dot" cx="100" cy="66.7" r="1.6" />
+                <circle cx="100" cy="333.3" r="5.2" />
+                <circle class="korf-dot" cx="100" cy="333.3" r="1.6" />
+              </g>
+              <text class="vak-name" x="100" y="190">AANVAL</text>
+              <text class="vak-name" x="100" y="216">VERDEDIGING</text>
+            </svg>
+            <div id="slots"></div>
+          </div>
         </div>
 
-        <div class="panel bench">
-          <div class="eyebrow">Bank</div>
+        <div class="card rise">
+          <div class="card-head">
+            <h2>Bank</h2>
+            <span id="bench-count" class="count" hidden></span>
+          </div>
           <div id="bench" class="bench-list"></div>
         </div>
-        <div id="subs-panel" class="panel" hidden>
-          <div class="eyebrow">Wissels · eruit → erin</div>
+
+        <div id="subs-panel" class="card rise" hidden>
+          <div class="card-head">
+            <h2>Wissels</h2>
+            <span class="hint">eruit → erin</span>
+          </div>
           <div id="subs" class="sub-list"></div>
         </div>
+
         <p id="stamp" class="stamp"></p>
       </section>
     </main>
+
+    <footer class="foot">
+      <img src="kios-logo.png" width="26" height="26" alt="" />
+      <span>KIOS Ruinerwold · sinds 1920</span>
+    </footer>
     <script src="app.js"></script>
   </body>
 </html>

@@ -4,6 +4,8 @@
 const SUPABASE_URL = 'https://kfqvzbhujqxwegrgvulu.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_Agzy7_DmX6x42pnufB28Rw_mg-3HpWK'
 const TEAM_SLUG = 'kios-4'
+const TEAM_NAME = 'KIOS 4'
+const CREST = 'kios-logo.png'
 
 const $ = (id) => document.getElementById(id)
 
@@ -36,16 +38,30 @@ async function fetchNextMatch() {
   }
 }
 
-function formatDate(iso) {
+const format = (options, date) => new Intl.DateTimeFormat('nl-NL', options).format(date)
+
+/** De datum uit de database (jjjj-mm-dd) als lokale datum, zonder tijdzoneverschuiving. */
+function localDate(iso) {
   const [y, m, d] = iso.split('-').map(Number)
-  return new Intl.DateTimeFormat('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(y, m - 1, d))
+  return new Date(y, m - 1, d)
 }
 
 function formatStamp(iso) {
   const date = new Date(iso)
-  const day = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long' }).format(date)
-  const time = new Intl.DateTimeFormat('nl-NL', { hour: '2-digit', minute: '2-digit' }).format(date)
-  return `Gepubliceerd op ${day} om ${time}`
+  return `Gepubliceerd op ${format({ day: 'numeric', month: 'long' }, date)} om ${format({ hour: '2-digit', minute: '2-digit' }, date)}`
+}
+
+/** Hele kalenderdagen tot de wedstrijd (afronden vangt de overgang naar zomer- of wintertijd op). */
+function daysUntil(date) {
+  const now = new Date()
+  return Math.round((date - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000)
+}
+
+function countdown(days) {
+  if (days === 0) return { text: 'Vandaag', kind: 'today' }
+  if (days === 1) return { text: 'Morgen', kind: 'soon' }
+  if (days > 1) return { text: `Over ${days} dagen`, kind: days < 7 ? 'soon' : '' }
+  return null
 }
 
 /** Namen komen uit de database: altijd via textContent op de pagina zetten. */
@@ -56,6 +72,22 @@ function el(tag, className, text) {
   return node
 }
 
+function teamBlock(name, us, initial) {
+  const team = el('div', us ? 'team us' : 'team')
+  if (us) {
+    const crest = el('img', 'team-crest')
+    crest.src = CREST
+    crest.alt = ''
+    crest.width = 60
+    crest.height = 60
+    team.append(crest)
+  } else {
+    team.append(el('span', 'team-crest letter', initial))
+  }
+  team.append(el('span', name.length > 16 ? 'team-name long' : 'team-name', name))
+  return team
+}
+
 function playerChip(player, slotGender) {
   const chip = el('div', `chip g-${player.gender === 'H' ? 'H' : 'D'}`)
   chip.append(el('span', 'name', player.name))
@@ -64,29 +96,71 @@ function playerChip(player, slotGender) {
 }
 
 function subRow(sub) {
+  const out = el('span', 'sub-out')
+  out.append(el('span', 'sub-name', sub.out.name))
+  const into = el('span', 'sub-in')
+  into.append(el('span', 'sub-name', sub.in.name))
   const row = el('div', 'sub')
-  row.append(el('span', 'sub-min', `${sub.minute}'`), el('span', 'sub-out', sub.out.name), el('span', 'sub-arrow', '→'), el('span', 'sub-in', sub.in.name))
+  row.append(el('span', 'sub-min', `${sub.minute}'`), out, el('span', 'sub-arrow', '→'), into)
   return row
 }
 
-function renderSlots(vak, slots, mirror) {
+function renderSlots(vak, slots, mirror, offset) {
   return SLOT_XY.map(([x, y0], i) => {
     const y = mirror ? 400 - y0 : y0
     const slot = el('div', `slot slot-${SLOT_GENDER[i]}`)
     slot.style.left = `${((x - VIEW.x) / VIEW.w) * 100}%`
     slot.style.top = `${((y - VIEW.y) / VIEW.h) * 100}%`
     const player = slots?.[i]
-    if (player) slot.append(playerChip(player, SLOT_GENDER[i]))
-    else slot.append(el('span', 'open', `${ROLE[SLOT_GENDER[i]]} · open`))
+    const content = player ? playerChip(player, SLOT_GENDER[i]) : el('span', 'open', `${ROLE[SLOT_GENDER[i]]} · open`)
+    content.style.animationDelay = `${180 + (offset + i) * 45}ms`
+    slot.append(content)
     slot.setAttribute('aria-label', `${vak}, ${ROLE[SLOT_GENDER[i]]}`)
     return slot
   })
 }
 
-function showNotice(text) {
+function showNotice(text, kind) {
   $('notice').textContent = text
+  $('notice').className = kind ? `card notice ${kind}` : 'card notice'
   $('notice').hidden = false
 }
+
+function renderMatch(match, teamName) {
+  const date = localDate(match.date)
+  const opponent = match.opponent?.trim()
+  const us = teamBlock(teamName, true)
+  const them = opponent ? teamBlock(opponent, false, opponent.match(/[\p{L}\p{N}]/u)?.[0].toUpperCase() ?? '?') : teamBlock('Tegenstander volgt', false, '?')
+  // de thuisploeg staat links, zoals in elk wedstrijdoverzicht
+  $('team-home').replaceChildren(match.home ? us : them)
+  $('team-away').replaceChildren(match.home ? them : us)
+
+  $('match-day').textContent = format({ weekday: 'long' }, date)
+  $('match-date').textContent = format({ day: 'numeric', month: 'long' }, date)
+  $('match-time').textContent = match.time || ''
+  $('match-time').hidden = !match.time
+
+  const days = daysUntil(date)
+  const soon = countdown(days)
+  $('match-countdown').hidden = !soon
+  if (soon) {
+    $('match-countdown').textContent = soon.text
+    $('match-countdown').className = soon.kind ? `countdown ${soon.kind}` : 'countdown'
+  }
+
+  $('match-venue').textContent = match.home ? 'Thuiswedstrijd' : 'Uitwedstrijd'
+  $('match-venue').className = `venue ${match.home ? 'home' : 'away'}`
+  const departure = !match.home && match.departure
+  $('match-departure').textContent = departure ? `Vertrek om ${departure} uur` : ''
+  $('match-departure').hidden = !departure
+
+  // voor schermlezers: de wedstrijd in één zin
+  const when = [format({ weekday: 'long', day: 'numeric', month: 'long' }, date), match.time && `om ${match.time} uur`].filter(Boolean).join(' ')
+  const against = opponent ? `${match.home ? 'Thuis tegen' : 'Uit bij'} ${opponent}` : match.home ? 'Thuiswedstrijd' : 'Uitwedstrijd'
+  $('match-summary').textContent = `${against}, ${when}${soon ? ` (${soon.text.toLowerCase()})` : ''}.`
+}
+
+let introEnding = false
 
 function render(data) {
   $('retry').hidden = true
@@ -95,22 +169,24 @@ function render(data) {
 
   const match = data?.match
   $('match').hidden = !match
+  if (match) renderMatch(match, data.team?.trim() || TEAM_NAME)
+
+  // de binnenkomst-animatie alleen bij de eerste keer, niet bij het stil verversen
+  if (!introEnding) {
+    introEnding = true
+    setTimeout(() => document.body.classList.remove('intro'), 1600)
+  }
+
   if (!match) return showNotice('Er staat nog geen volgende wedstrijd gepland.')
-
-  const opponent = match.opponent?.trim()
-  $('match-opponent').textContent = opponent ? `${match.home ? 'Thuis tegen' : 'Uit bij'} ${opponent}` : match.home ? 'Thuiswedstrijd' : 'Uitwedstrijd'
-  $('match-when').textContent = [formatDate(match.date), match.time && `${match.time} uur`].filter(Boolean).join(' · ')
-
-  const departure = !match.home && match.departure
-  $('match-departure').textContent = departure ? `Vertrek om ${departure} uur` : ''
-  $('match-departure').hidden = !departure
 
   const lineup = match.lineup
   if (!lineup) return showNotice('De vakken voor deze wedstrijd moeten nog gepubliceerd worden.')
 
-  $('slots').replaceChildren(...renderSlots('Aanval', lineup.attack, false), ...renderSlots('Verdediging', lineup.defense, true))
+  $('slots').replaceChildren(...renderSlots('Aanval', lineup.attack, false, 0), ...renderSlots('Verdediging', lineup.defense, true, 4))
   const bench = lineup.bench ?? []
   $('bench').replaceChildren(...(bench.length ? bench.map((p) => playerChip(p)) : [el('span', 'open', 'Geen wisselspelers')]))
+  $('bench-count').textContent = `${bench.length} ${bench.length === 1 ? 'speler' : 'spelers'}`
+  $('bench-count').hidden = !bench.length
   // alleen aanwezig als de trainer de wissels voor deze wedstrijd aan heeft gezet
   const subs = lineup.subs
   $('subs-panel').hidden = !subs
@@ -124,7 +200,7 @@ let lastLoad = 0
 async function load(silent) {
   if (!silent) {
     $('retry').hidden = true
-    showNotice('Gegevens ophalen…')
+    showNotice('Gegevens ophalen…', 'loading')
   }
   lastLoad = Date.now()
   try {
@@ -134,7 +210,7 @@ async function load(silent) {
     if (silent) return
     $('match').hidden = true
     $('lineup').hidden = true
-    showNotice('De gegevens kunnen nu niet worden opgehaald. Controleer je verbinding en probeer het opnieuw.')
+    showNotice('De gegevens kunnen nu niet worden opgehaald. Controleer je verbinding en probeer het opnieuw.', 'error')
     $('retry').hidden = false
   }
 }
