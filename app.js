@@ -7,6 +7,9 @@ const TEAM_SLUG = 'kios-4'
 const TEAM_NAME = 'KIOS 4'
 const CREST = 'kios-logo.png'
 
+/** Versie van deze pagina: de ?v= achter app.js, die npm run site erbij zet. Leeg bij lokaal testen. */
+const PAGE_VERSION = new URL(document.currentScript.src).searchParams.get('v') || ''
+
 const $ = (id) => document.getElementById(id)
 
 /** Plekken op het veld, in dezelfde eenheden als de tekening. Index 0-1 = dames, 2-3 = heren. */
@@ -215,11 +218,29 @@ async function load(silent) {
   }
 }
 
+/**
+ * Staat er online een nieuwere versie van de pagina, dan herladen. Een telefoon houdt een open
+ * tabblad soms dagen vast; zo krijgt ook die na een update de nieuwe opmaak.
+ * De unieke ?versie= en no-store halen index.html altijd vers op, buiten elke cache om.
+ */
+async function reloadIfOutdated() {
+  if (!PAGE_VERSION) return
+  try {
+    const res = await fetch(`./?versie=${Date.now()}`, { cache: 'no-store' })
+    const online = (await res.text()).match(/app\.js\?v=([0-9a-f]+)/)?.[1]
+    if (online && online !== PAGE_VERSION) location.reload()
+  } catch {
+    // geen verbinding: de huidige pagina gewoon laten staan
+  }
+}
+
 $('retry').addEventListener('click', () => load(false))
 
 // Pagina weer geopend (bijv. vanuit WhatsApp): de nieuwste stand ophalen
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && Date.now() - lastLoad > 60000) load(true)
+  if (document.hidden || Date.now() - lastLoad <= 60000) return
+  load(true)
+  reloadIfOutdated()
 })
 
 load(false)

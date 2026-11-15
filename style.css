@@ -29,7 +29,9 @@
   --warn-ink: #6e4b00;
   --display: 'Exo 2', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --text: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* "only": de browser mag de pagina niet zelf donker maken (donkere modus op sommige Android-telefoons) */
   color-scheme: light;
+  color-scheme: only light;
 }
 
 * {
@@ -73,9 +75,12 @@ body {
 }
 
 .wrap {
-  width: min(100%, 520px);
-  margin-inline: auto;
-  padding-inline: 16px;
+  width: 100%;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 /* ---------- Kop ---------- */
@@ -543,7 +548,7 @@ img.team-crest {
   position: absolute;
   width: 41%;
   min-height: 44px;
-  translate: -50% -50%;
+  transform: translate(-50%, -50%);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: center;
@@ -738,7 +743,7 @@ img.team-crest {
 
 @keyframes spin {
   to {
-    rotate: 360deg;
+    transform: rotate(360deg);
   }
 }
 
